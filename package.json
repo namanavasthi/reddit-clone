@@ -1,0 +1,46 @@
+{
+  "name": "reddit-clone",
+  "version": "1.0.0",
+  "description": "create a front and back end based reddit clone. would have minimal features as the focus of this project is for me to implement concepts I'm learning.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "watch": "tsc -w",
+    "start:postgresql": "brew services start postgresql",
+    "stop:postgresql": "brew services stop postgresql",
+    "dev": "nodemon --exec ts-node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/namanavasthi/reddit-clone.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/namanavasthi/reddit-clone/issues"
+  },
+  "homepage": "https://github.com/namanavasthi/reddit-clone#readme",
+  "devDependencies": {
+    "@types/node": "^16.3.2",
+    "nodemon": "^2.0.12",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "@mikro-orm/cli": "^4.5.7",
+    "@mikro-orm/core": "^4.5.7",
+    "@mikro-orm/migrations": "^4.5.7",
+    "@mikro-orm/postgresql": "^4.5.7",
+    "pg": "^8.6.0"
+  },
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./src/mikro-orm.config.ts",
+      "./dist/mikro-orm.config.js"
+    ]
+  }
+}
