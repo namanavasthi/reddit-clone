@@ -1,35 +1,41 @@
 import { MikroORM } from "@mikro-orm/core";
 import { __prod__ } from "./constants";
-import { Post } from "./entities/Post";
+// import { Post } from "./entities/Post";
 import mikroConfig from "./mikro-orm.config";
+import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
+import { HelloResolver } from "./resolvers/hello";
 
 const main = async () => {
+  /*
+   * create db connection
+   */
   const orm = await MikroORM.init(mikroConfig);
-
-  console.log("---------------- ORM INITIALIZED");
-
   const migrator = orm.getMigrator();
-
-  console.log("---------------- MIGRATOR OBJECT INITIALIZED");
-
   await migrator.createMigration();
-
-  console.log("---------------- CREATE MIGRATION");
-
   await migrator.up();
 
-  console.log("---------------- RUN MIGRATION");
+  /*
+   * setup express app
+   */
+  const app = express();
 
-  const post = orm.em.create(Post, { title: "my first post" });
+  /*
+   * create graphql endpooint using apollo
+   */
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [HelloResolver],
+      validate: false,
+    }),
+  });
 
-  console.log("---------------- INITIALIZE POST");
+  apolloServer.applyMiddleware({ app });
 
-  await orm.em.persistAndFlush(post);
-
-  console.log("---------------- PERSIST AND FLUSH POST INTO TABLE");
-
-  const posts = await orm.em.find(Post, {});
-  console.log(posts);
+  app.listen(4000, () => {
+    console.log("server started on localhoost:4000");
+  });
 };
 
 main().catch((err) => {
