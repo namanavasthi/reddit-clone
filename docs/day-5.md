@@ -35,3 +35,31 @@
 - what have we done here ? now that we sare storing cookies on browser, when we send a req to the server, now the server know who we are
 - head over to `userResolver` and add a `me` query
 - now auto login people after they register
+
+### WHAT IS GOING ON HERE
+
+#### STORE IN REDIS
+
+- whatever i put inside `req.session.<something>` gets stored into redis like
+- `{<something> : value}` this is the data being stored into redis
+- but redis will store them as `<key, value>` pairs
+
+#### SIGN THE KEY
+
+- `express-session` will get this `key` from redis
+- sign it, and store it as the cookie value on user's browser
+
+#### MAKE A REQUEST
+
+- whenever the user makes a request, the cookie value stored is sent to the server
+- on the server, it decrypt the cookie value using the `secret` we define in the session's property
+- this will give the server the `key` from the redis db it would wanna check
+- make a request to redis, look up the `key` and get the data
+
+> NOTE : it's now important to realize why we stored the ID and not any other field
+> we'd want this session value to be static and not change
+
+## FRONTEND WITH NEXT + CHAKRA UI
+
+- `npx create-next-app --example with-chakra-ui reddit-clone-web`
+- will be documenting web related stuff inside `reddit-clone-web`
