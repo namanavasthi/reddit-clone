@@ -63,3 +63,11 @@
 
 - `npx create-next-app --example with-chakra-ui reddit-clone-web`
 - will be documenting web related stuff inside `reddit-clone-web`
+- will be ripping all basic component off this project
+- and adding `typescript` to it
+
+## SETUP REGISTER PAGE
+
+- create `InputField` component
+- pass in `username` and `password` to a form
+- use `Formik` to create form
