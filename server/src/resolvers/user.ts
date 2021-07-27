@@ -2,6 +2,7 @@ import { User } from "../entities/User";
 import { AppContext } from "src/types";
 import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import argon2 from "argon2";
+import { EntityManager } from "@mikro-orm/postgresql";
 
 @InputType()
 class UserNamePasswordInput {
@@ -79,10 +80,17 @@ export class UserResolver {
     }
 
     const hashPassword = await argon2.hash(options.password);
-    const user = em.create(User, { username: options.username, password: hashPassword });
+    let user;
 
     try {
-      await em.persistAndFlush(user);
+      const result = await (em as EntityManager)
+        .createQueryBuilder(User)
+        .getKnexQuery()
+        .insert({ username: options.username, password: hashPassword, created_at: new Date(), updated_at: new Date() })
+        .returning("*");
+
+      user = result[0];
+      // await em.persistAndFlush(user);
     } catch (err) {
       // duplicate username error
       if (err.code === "23505") {
@@ -121,7 +129,11 @@ export class UserResolver {
       return {
         errors: [
           {
-            field: "username or password",
+            field: "username",
+            message: "invalid login details",
+          },
+          {
+            field: "password",
             message: "invalid login details",
           },
         ],
@@ -134,7 +146,11 @@ export class UserResolver {
       return {
         errors: [
           {
-            field: "username or password",
+            field: "username",
+            message: "invalid login details",
+          },
+          {
+            field: "password",
             message: "invalid login details",
           },
         ],

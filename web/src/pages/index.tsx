@@ -1,10 +1,12 @@
-import { Wrapper } from "../components/Wrapper";
+import { Box } from "@chakra-ui/react";
+import { NavBar } from "../components/NavBar";
 
 const Index = () => {
   return (
-    <Wrapper>
+    <Box>
+      <NavBar />
       <h1>Hello World!</h1>
-    </Wrapper>
+    </Box>
   );
 };
 
